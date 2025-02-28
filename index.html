@@ -1,11 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Next-Skill Hub - Classes & Workshops</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- External CSS -->
+  <link rel="stylesheet" href="styles/style.css" />
+  <!-- Vue.js -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
 </head>
 <body>
-    
+  <div id="app">
+    <!-- Header Section -->
+    <header>
+      <!-- Logo Container: Enlarged logo and no site name text -->
+      <div class="logo-container">
+        <img id="logo" :src="imageLink('assets/logo.png')" alt="Next-Skill Hub Logo" />
+      </div>
+      <!-- Search and Sorting Controls -->
+      <div class="search-sort">
+        <input 
+          v-model.trim="query" 
+          @input="filterProducts" 
+          type="text" 
+          placeholder="Search classes..." />
+        <div class="sort-container">
+          <select v-model="sortAttribute">
+            <option value="title">Title</option>
+            <option value="location">Location</option>
+            <option value="price">Price</option>
+            <option value="availableSeats">Availability</option>
+          </select>
+          <button @click="toggleSortOrder">
+            <i :class="isAscending ? 'fas fa-sort-amount-up' : 'fas fa-sort-amount-down'"></i>
+            {{ isAscending ? 'Asc' : 'Desc' }}
+          </button>
+        </div>
+      </div>
+     
+  <!-- External JavaScript -->
+  <script src="scripts/app.js"></script>
 </body>
 </html>
