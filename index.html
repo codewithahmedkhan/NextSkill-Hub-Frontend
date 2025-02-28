@@ -46,7 +46,7 @@
         <i class="fas fa-shopping-cart"></i> {{ cartItemCount }}
       </button>
     </header>
-    
+
      <!-- Main Content Section -->
       <main>
         <!-- Classes Listing Section -->
@@ -82,6 +82,39 @@
             </div>
           </div>
         </section>
+         <!-- Checkout Section -->
+      <section v-else class="checkout-section">
+        <h2>Checkout</h2>
+        <!-- Cart Summary -->
+        <div class="cart-summary">
+          <h3>Cart Summary</h3>
+          <!-- Loop through each cart item -->
+          <div v-for="item in cart" :key="item.product._id" class="cart-item">
+            <img :src="imageLink(item.product.image)" alt="Class Image" />
+            <div class="cart-details">
+              <h4>{{ item.product.title }}</h4>
+              <p>Qty: {{ item.quantity }}</p>
+              <p>Price: AED {{ item.product.price }}</p>
+            </div>
+            <button class="remove-btn" @click="removeFromCart(item.product)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          <p class="total-amount">Total: AED {{ totalPrice }}</p>
+        </div>
+        <!-- Order Form -->
+        <div class="order-form">
+          <h3>Order Details</h3>
+          <label>Full Name:</label>
+          <input type="text" v-model.trim="order.fullName" placeholder="Your full name" />
+          <label>Phone Number:</label>
+          <input type="number" v-model.number="order.phoneNumber" placeholder="Your phone number" />
+          <button id="submitButton" @click="submitForm" :disabled="!isFormValid">
+            Place Order
+          </button>
+        </div>
+      </section>
+    </main>
   <!-- External JavaScript -->
   <script src="scripts/app.js"></script>
 </body>
