@@ -41,7 +41,47 @@
           </button>
         </div>
       </div>
-     
+      <!-- Checkout Button showing cart count -->
+      <button id="checkout_button" @click="showCheckout" :disabled="cart.length === 0">
+        <i class="fas fa-shopping-cart"></i> {{ cartItemCount }}
+      </button>
+    </header>
+    
+     <!-- Main Content Section -->
+      <main>
+        <!-- Classes Listing Section -->
+        <section v-if="showClass" class="product-list">
+          <!-- Loop through each product (class/workshop) -->
+          <div v-for="product in sortedClasses" :key="product._id" class="product-card">
+            <!-- Product Image -->
+            <img :src="imageLink(product.image)" alt="Class Image" />
+            <!-- Product Information -->
+            <div class="product-info">
+              <h2>{{ product.title }}</h2>
+              <p class="description">{{ product.description }}</p>
+              <p class="location">
+                <i class="fas fa-map-marker-alt"></i> {{ product.location }}
+              </p>
+              <p class="price">AED {{ product.price }}</p>
+              <!-- Display seat availability or sold-out status -->
+              <p class="availability" v-if="product.availableSeats > 0">
+                Seats: {{ product.availableSeats }}
+              </p>
+              <p class="availability sold-out" v-else>
+                Sold Out
+              </p>
+              <!-- Rating Display -->
+              <div class="rating">
+                <span v-for="n in product.rating" :key="n">★</span>
+                <span v-for="n in 5 - product.rating" :key="n">☆</span>
+              </div>
+              <!-- Enroll Button -->
+              <button @click="addToCart(product)" :disabled="product.availableSeats === 0">
+                {{ product.availableSeats === 0 ? "Full" : "Enroll" }}
+              </button>
+            </div>
+          </div>
+        </section>
   <!-- External JavaScript -->
   <script src="scripts/app.js"></script>
 </body>
