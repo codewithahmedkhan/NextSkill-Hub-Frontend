@@ -242,7 +242,7 @@
             }))
           };
           
-          fetch('https://next-skill-hub-backend.onrender.com/collection/orders', {
+          fetch('https://nextskill-hub-backend.onrender.com/collection/orders', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
@@ -258,7 +258,7 @@
         fetchPutUpdate() {
           const promises = this.cart.map(item => {
             const updatedSeats = { availableSeats: item.class.availableSeats };
-            return fetch(`https://next-skill-hub-backend.onrender.com/collection/lessons/${item.class._id}`, {
+            return fetch(`https://nextskill-hub-backend.onrender.com/collection/lessons/${item.class._id}`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(updatedSeats),
@@ -272,7 +272,7 @@
 
         // Fetch all classes from the backend
         fetchProducts() {
-          fetch('https://next-skill-hub-backend.onrender.com/collection/lessons')
+          fetch('https://nextskill-hub-backend.onrender.com/collection/lessons')
             .then(response => response.json())
             .then(data => { this.classes = data; })
             .catch(error => console.error("Error fetching products:", error));
@@ -283,7 +283,7 @@
           if (!this.query.trim()) {
             this.fetchProducts();
           } else {
-            fetch(`https://next-skill-hub-backend.onrender.com/search/lessons?q=${encodeURIComponent(this.query.trim())}`)
+            fetch(`https://nextskill-hub-backend.onrender.com/search/lessons?q=${encodeURIComponent(this.query.trim())}`)
               .then(response => response.json())
               .then(data => { this.classes = data; })
               .catch(error => console.error("Error fetching search results:", error));
@@ -292,7 +292,7 @@
 
         // Return the full image URL
         imageLink(image) {
-          return `https://next-skill-hub-backend.onrender.com/${image}`;
+          return `https://nextskill-hub-backend.onrender.com/${image}`;
         }
       },
 
