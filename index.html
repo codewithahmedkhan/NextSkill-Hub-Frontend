@@ -1,48 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Character set and viewport settings for responsive design -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Page title -->
   <title>Next-Skill Hub - Classes & Workshops</title>
+
+  <!-- Google Font for the page (Roboto) -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- External stylesheet link -->
   <link rel="stylesheet" href="styles/style.css" />
+
+  <!-- Vue.js framework for frontend interactivity -->
   <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+  
+  <!-- Font Awesome for icons (like cart, trash, etc.) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
 </head>
 <body>
+  <!-- Main application container -->
   <div id="app">
     <header>
+      <!-- Logo Section -->
       <div class="logo-container">
         <img id="logo" :src="imageLink('assets/logo.png')" alt="Next-Skill Hub Logo" />
       </div>
+
+      <!-- Search and Sorting Section -->
       <div class="search-sort">
+        <!-- Search bar for filtering classes -->
         <input 
           v-model.trim="query" 
           @input="fetchGetSearch" 
           type="text" 
           placeholder="Search lessons..." />
+
         <div class="sort-container">
+          <!-- Dropdown to select sorting criteria -->
           <select v-model="sortAttribute">
             <option value="title">Subject</option>
             <option value="location">Location</option>
             <option value="price">Price</option>
             <option value="availableSeats">Availability</option>
           </select>
+          
+          <!-- Button to toggle sorting order (ascending/descending) -->
           <button @click="toggleSortOrder">
             <i :class="isAscending ? 'fas fa-sort-amount-up' : 'fas fa-sort-amount-down'"></i>
             {{ isAscending ? 'Asc' : 'Desc' }}
           </button>
         </div>
       </div>
+
+      <!-- Cart Button, disabled if cart is empty -->
       <button id="checkout_button" @click="showCheckout" :disabled="cart.length === 0">
         <i class="fas fa-shopping-cart"></i> {{ cartItemCount }}
       </button>
     </header>
 
     <main>
+      <!-- Classes display section -->
       <section v-if="showClass" class="product-list">
         <div v-for="product in sortedClasses" :key="product._id" class="product-card">
           <img :src="imageLink(product.image)" alt="Class Image" />
+          
           <div class="product-info">
             <h2>{{ product.title }}</h2>
             <p class="description">{{ product.description }}</p>
@@ -50,24 +74,34 @@
               <i class="fas fa-map-marker-alt"></i> {{ product.location }}
             </p>
             <p class="price">AED {{ product.price }}</p>
+
+            <!-- Display availability status -->
             <p class="availability" v-if="product.availableSeats > 0">
               Seats: {{ product.availableSeats }}
             </p>
             <p class="availability sold-out" v-else>
               Sold Out
             </p>
+
+            <!-- Rating stars for the class -->
             <div class="rating">
               <span v-for="n in product.rating" :key="n">★</span>
               <span v-for="n in 5 - product.rating" :key="n">☆</span>
             </div>
+
+            <!-- Enroll button, disabled if no seats are available -->
             <button @click="addToCart(product)" :disabled="product.availableSeats === 0">
               {{ product.availableSeats === 0 ? "Full" : "Enroll" }}
             </button>
           </div>
         </div>
       </section>
+
+      <!-- Checkout section -->
       <section v-else class="checkout-section">
         <h2>Checkout</h2>
+        
+        <!-- Cart summary -->
         <div class="cart-summary">
           <h3>Cart Summary</h3>
           <div v-for="item in cart" :key="item.product._id" class="cart-item">
@@ -77,19 +111,27 @@
               <p>Qty: {{ item.quantity }}</p>
               <p>Price: AED {{ item.product.price }}</p>
             </div>
+            
+            <!-- Remove button for cart item -->
             <button class="remove-btn" @click="removeFromCart(item.product)">
               <i class="fas fa-trash"></i>
             </button>
           </div>
+          
+          <!-- Total amount calculation -->
           <p class="total-amount">Total: AED {{ totalPrice }}</p>
         </div>
 
+        <!-- Order details form -->
         <div class="order-form">
           <h3>Order Details</h3>
           <label>Full Name:</label>
           <input type="text" v-model.trim="order.fullName" placeholder="Your full name" />
+          
           <label>Phone Number:</label>
           <input type="number" v-model.number="order.phoneNumber" placeholder="Your phone number" />
+          
+          <!-- Submit button for placing order -->
           <button id="submitButton" @click="submitForm" :disabled="!isFormValid">
             Place Order
           </button>
@@ -102,25 +144,28 @@
     </footer>
   </div>
 
+  <!-- Vue.js script for the app's logic -->
   <script type="text/javascript">
     new Vue({
       el: "#app",
       data: {
         sitename: "Next-Skill Hub",
-        classes: [],
-        cart: [],
-        showClass: true,
-        sortAttribute: "title",
-        isAscending: true,
-        order: { fullName: "", phoneNumber: null },
-        query: ''
+        classes: [], // List of available classes
+        cart: [], // User's cart containing selected classes
+        showClass: true, // Toggle between classes and checkout view
+        sortAttribute: "title", // Attribute to sort classes by
+        isAscending: true, // Whether to sort in ascending order
+        order: { fullName: "", phoneNumber: null }, // User's order details
+        query: '' // Search query input
       },
     
       computed: {
+        // Calculate the total number of items in the cart
         cartItemCount() {
           return this.cart.reduce((total, item) => total + item.quantity, 0);
         },
     
+        // Sort the classes based on the selected attribute and order
         sortedClasses() {
           return [...this.classes].sort((a, b) => {
             let aVal = a[this.sortAttribute];
@@ -130,116 +175,132 @@
             return this.isAscending ? (aVal > bVal ? 1 : -1) : (aVal < bVal ? 1 : -1);
           });
         },
+
+        // Calculate the total price of the items in the cart
         totalPrice() {
-      return this.cart.reduce((total, item) => total + item.class.price * item.quantity, 0);
-    },
-    isValidName() {
-      return /^[a-zA-Z\s]+$/.test(this.order.fullName) && this.order.fullName.trim().length > 1;
-    },
-    isValidPhoneNumber() {
-      return /^\d{9,}$/.test(this.order.phoneNumber);
-    },
+          return this.cart.reduce((total, item) => total + item.class.price * item.quantity, 0);
+        },
 
-    isFormValid() {
-      return this.isValidName && this.isValidPhoneNumber;
-    }
-    },
-    methods: {
-    toggleSortOrder() {
-      this.isAscending = !this.isAscending;
-    },
+        // Validate the full name (only alphabetic characters and spaces)
+        isValidName() {
+          return /^[a-zA-Z\s]+$/.test(this.order.fullName) && this.order.fullName.trim().length > 1;
+        },
 
-    addToCart(classItem) {
-      const cartItem = this.cart.find(item => item.class._id === classItem._id);
-      if (cartItem) {
-        cartItem.quantity++;
-      } else {
-        this.cart.push({ class: classItem, quantity: 1 });
-      }
-      classItem.availableSeats--;
-    },
+        // Validate the phone number (at least 9 digits)
+        isValidPhoneNumber() {
+          return /^\d{9,}$/.test(this.order.phoneNumber);
+        },
 
-    removeFromCart(classItem) {
-      const cartItemIndex = this.cart.findIndex(item => item.class._id === classItem._id);
-      if (cartItemIndex > -1) {
-        this.cart[cartItemIndex].class.availableSeats += this.cart[cartItemIndex].quantity;
-        this.cart.splice(cartItemIndex, 1);
-      }
-      if (this.cart.length === 0) this.showClass = true;
-    },
+        // Validate the order form (both name and phone number must be valid)
+        isFormValid() {
+          return this.isValidName && this.isValidPhoneNumber;
+        }
+      },
 
-    showCheckout() {
-      this.showClass = !this.showClass; // Toggle the view between class listing and checkout
-    },
+      methods: {
+        // Toggle the sorting order between ascending and descending
+        toggleSortOrder() {
+          this.isAscending = !this.isAscending;
+        },
 
-    submitForm() {
-      const payload = {
-        ...this.order,
-        items: this.cart.map(item => ({
-          _id: item.class._id,
-          title: item.class.title,
-          location: item.class.location,
-          price: item.class.price,
-          orderedQuantity: item.quantity
-        }))
-      };
-      fetch('https://next-skill-hub-backend.onrender.com/collection/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-        .then(() => {
-          alert("Order placed successfully!");
-          this.fetchPutUpdate();
-        })
-        .catch(error => console.error("Error submitting order:", error));
-    },
+        // Add a class to the cart or increase the quantity if it's already in the cart
+        addToCart(classItem) {
+          const cartItem = this.cart.find(item => item.class._id === classItem._id);
+          if (cartItem) {
+            cartItem.quantity++;
+          } else {
+            this.cart.push({ class: classItem, quantity: 1 });
+          }
+          classItem.availableSeats--; // Decrease available seats
+        },
 
-    fetchPutUpdate() {
-      const promises = this.cart.map(item => {
-        const updatedSeats = { availableSeats: item.class.availableSeats };
-        return fetch(`https://next-skill-hub-backend.onrender.com/collection/lessons/${item.class._id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updatedSeats),
-        });
-      });
-      Promise.all(promises).then(() => {
-        this.cart = [];
-        this.showClass = true;
-      });
-    },
+        // Remove an item from the cart
+        removeFromCart(classItem) {
+          const cartItemIndex = this.cart.findIndex(item => item.class._id === classItem._id);
+          if (cartItemIndex > -1) {
+            this.cart[cartItemIndex].class.availableSeats += this.cart[cartItemIndex].quantity;
+            this.cart.splice(cartItemIndex, 1);
+          }
+          if (this.cart.length === 0) this.showClass = true; // Show classes view when cart is empty
+        },
 
-    fetchProducts() {
-      fetch('https://next-skill-hub-backend.onrender.com/collection/lessons')
-        .then(response => response.json())
-        .then(data => { this.classes = data; })
-        .catch(error => console.error("Error fetching products:", error));
-    },
+        // Toggle between class listing and checkout view
+        showCheckout() {
+          this.showClass = !this.showClass;
+        },
 
-    fetchGetSearch() {
-      if (!this.query.trim()) {
+        // Submit the order form
+        submitForm() {
+          const payload = {
+            ...this.order,
+            items: this.cart.map(item => ({
+              _id: item.class._id,
+              title: item.class.title,
+              location: item.class.location,
+              price: item.class.price,
+              orderedQuantity: item.quantity
+            }))
+          };
+          
+          fetch('https://next-skill-hub-backend.onrender.com/collection/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          })
+            .then(() => {
+              alert("Order placed successfully!");
+              this.fetchPutUpdate();
+            })
+            .catch(error => console.error("Error submitting order:", error));
+        },
+
+        // Update the available seats after the order is placed
+        fetchPutUpdate() {
+          const promises = this.cart.map(item => {
+            const updatedSeats = { availableSeats: item.class.availableSeats };
+            return fetch(`https://next-skill-hub-backend.onrender.com/collection/lessons/${item.class._id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(updatedSeats),
+            });
+          });
+          Promise.all(promises).then(() => {
+            this.cart = [];
+            this.showClass = true;
+          });
+        },
+
+        // Fetch all classes from the backend
+        fetchProducts() {
+          fetch('https://next-skill-hub-backend.onrender.com/collection/lessons')
+            .then(response => response.json())
+            .then(data => { this.classes = data; })
+            .catch(error => console.error("Error fetching products:", error));
+        },
+
+        // Handle search input and fetch results
+        fetchGetSearch() {
+          if (!this.query.trim()) {
+            this.fetchProducts();
+          } else {
+            fetch(`https://next-skill-hub-backend.onrender.com/search/lessons?q=${encodeURIComponent(this.query.trim())}`)
+              .then(response => response.json())
+              .then(data => { this.classes = data; })
+              .catch(error => console.error("Error fetching search results:", error));
+          }
+        },
+
+        // Return the full image URL
+        imageLink(image) {
+          return `https://next-skill-hub-backend.onrender.com/${image}`;
+        }
+      },
+
+      // Fetch products when the component is created
+      created() {
         this.fetchProducts();
-      } else {
-        fetch(`https://next-skill-hub-backend.onrender.com/search/lessons?q=${encodeURIComponent(this.query.trim())}`)
-          .then(response => response.json())
-          .then(data => { this.classes = data; })
-          .catch(error => console.error("Error fetching search results:", error));
       }
-    },
-
-     imageLink(image) {
-      return `https://next-skill-hub-backend.onrender.com/${image}`;
-    }
-    },
-    
-    created() {
-                this.fetchProducts();
-            }
-
-
-});
-    </script>
-    
+    });
+  </script>
 </body>
 </html>
