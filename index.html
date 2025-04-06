@@ -193,6 +193,21 @@
           this.fetchPutUpdate();
         })
         .catch(error => console.error("Error submitting order:", error));
+    },
+
+    fetchPutUpdate() {
+      const promises = this.cart.map(item => {
+        const updatedSeats = { availableSeats: item.class.availableSeats };
+        return fetch(`https://next-skill-hub-backend.onrender.com/collection/lessons/${item.class._id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedSeats),
+        });
+      });
+      Promise.all(promises).then(() => {
+        this.cart = [];
+        this.showClass = true;
+      });
     }
     
  
