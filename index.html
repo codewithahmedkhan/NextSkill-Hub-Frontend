@@ -208,10 +208,17 @@
         this.cart = [];
         this.showClass = true;
       });
-    }
+    },
+
+    fetchProducts() {
+      fetch('https://next-skill-hub-backend.onrender.com/collection/lessons')
+        .then(response => response.json())
+        .then(data => { this.classes = data; })
+        .catch(error => console.error("Error fetching products:", error));
+    },
     
  
-  }
+}
 
 
 });
