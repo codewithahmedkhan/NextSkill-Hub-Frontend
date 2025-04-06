@@ -138,7 +138,13 @@
     },
     isValidPhoneNumber() {
       return /^\d{9,}$/.test(this.order.phoneNumber);
+    },
+
+    isFormValid() {
+      return this.isValidName && this.isValidPhoneNumber;
     }
+
+    
 
 
     }
