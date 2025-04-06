@@ -135,8 +135,12 @@
     },
     isValidName() {
       return /^[a-zA-Z\s]+$/.test(this.order.fullName) && this.order.fullName.trim().length > 1;
+    },
+    isValidPhoneNumber() {
+      return /^\d{9,}$/.test(this.order.phoneNumber);
     }
-    
+
+
     }
     });
     </script>
