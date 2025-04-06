@@ -4,24 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Next-Skill Hub - Classes & Workshops</title>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <!-- External CSS -->
   <link rel="stylesheet" href="styles/style.css" />
-  <!-- Vue.js -->
   <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
 </head>
 <body>
   <div id="app">
-    <!-- Header Section -->
     <header>
-      <!-- Logo Container: Enlarged logo and no site name text -->
       <div class="logo-container">
         <img id="logo" :src="imageLink('assets/logo.png')" alt="Next-Skill Hub Logo" />
       </div>
-      <!-- Search and Sorting Controls -->
       <div class="search-sort">
         <input 
           v-model.trim="query" 
@@ -41,54 +34,42 @@
           </button>
         </div>
       </div>
-      <!-- Checkout Button showing cart count -->
       <button id="checkout_button" @click="showCheckout" :disabled="cart.length === 0">
         <i class="fas fa-shopping-cart"></i> {{ cartItemCount }}
       </button>
     </header>
 
-     <!-- Main Content Section -->
-      <main>
-        <!-- Classes Listing Section -->
-        <section v-if="showClass" class="product-list">
-          <!-- Loop through each product (class/workshop) -->
-          <div v-for="product in sortedClasses" :key="product._id" class="product-card">
-            <!-- Product Image -->
-            <img :src="imageLink(product.image)" alt="Class Image" />
-            <!-- Product Information -->
-            <div class="product-info">
-              <h2>{{ product.title }}</h2>
-              <p class="description">{{ product.description }}</p>
-              <p class="location">
-                <i class="fas fa-map-marker-alt"></i> {{ product.location }}
-              </p>
-              <p class="price">AED {{ product.price }}</p>
-              <!-- Display seat availability or sold-out status -->
-              <p class="availability" v-if="product.availableSeats > 0">
-                Seats: {{ product.availableSeats }}
-              </p>
-              <p class="availability sold-out" v-else>
-                Sold Out
-              </p>
-              <!-- Rating Display -->
-              <div class="rating">
-                <span v-for="n in product.rating" :key="n">★</span>
-                <span v-for="n in 5 - product.rating" :key="n">☆</span>
-              </div>
-              <!-- Enroll Button -->
-              <button @click="addToCart(product)" :disabled="product.availableSeats === 0">
-                {{ product.availableSeats === 0 ? "Full" : "Enroll" }}
-              </button>
+    <main>
+      <section v-if="showClass" class="product-list">
+        <div v-for="product in sortedClasses" :key="product._id" class="product-card">
+          <img :src="imageLink(product.image)" alt="Class Image" />
+          <div class="product-info">
+            <h2>{{ product.title }}</h2>
+            <p class="description">{{ product.description }}</p>
+            <p class="location">
+              <i class="fas fa-map-marker-alt"></i> {{ product.location }}
+            </p>
+            <p class="price">AED {{ product.price }}</p>
+            <p class="availability" v-if="product.availableSeats > 0">
+              Seats: {{ product.availableSeats }}
+            </p>
+            <p class="availability sold-out" v-else>
+              Sold Out
+            </p>
+            <div class="rating">
+              <span v-for="n in product.rating" :key="n">★</span>
+              <span v-for="n in 5 - product.rating" :key="n">☆</span>
             </div>
+            <button @click="addToCart(product)" :disabled="product.availableSeats === 0">
+              {{ product.availableSeats === 0 ? "Full" : "Enroll" }}
+            </button>
           </div>
-        </section>
-         <!-- Checkout Section -->
+        </div>
+      </section>
       <section v-else class="checkout-section">
         <h2>Checkout</h2>
-        <!-- Cart Summary -->
         <div class="cart-summary">
           <h3>Cart Summary</h3>
-          <!-- Loop through each cart item -->
           <div v-for="item in cart" :key="item.product._id" class="cart-item">
             <img :src="imageLink(item.product.image)" alt="Class Image" />
             <div class="cart-details">
@@ -103,7 +84,6 @@
           <p class="total-amount">Total: AED {{ totalPrice }}</p>
         </div>
     
-        <!-- Order Form -->
         <div class="order-form">
           <h3>Order Details</h3>
           <label>Full Name:</label>
@@ -116,18 +96,10 @@
         </div>
       </section>
     </main>
-     <!-- Footer Section -->
-     <footer>
+    <footer>
         <p>&copy; 2025 Next-Skill Hub. All rights reserved.</p>
       </footer>
-    </div>
-
-
-
-    <script type="text/javascript">
-
-      
-    </script>
-  
+  </div>
+  <script type="text/javascript"></script>
 </body>
 </html>
