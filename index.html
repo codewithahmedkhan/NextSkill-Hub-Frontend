@@ -157,7 +157,17 @@
         this.cart.push({ class: classItem, quantity: 1 });
       }
       classItem.availableSeats--;
+    },
+
+    removeFromCart(classItem) {
+      const cartItemIndex = this.cart.findIndex(item => item.class._id === classItem._id);
+      if (cartItemIndex > -1) {
+        this.cart[cartItemIndex].class.availableSeats += this.cart[cartItemIndex].quantity;
+        this.cart.splice(cartItemIndex, 1);
+      }
+      if (this.cart.length === 0) this.showClass = true;
     }
+ 
   }
 
 
