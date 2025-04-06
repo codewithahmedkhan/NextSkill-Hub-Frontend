@@ -158,13 +158,13 @@
         order: { fullName: "", phoneNumber: null }, // User's order details
         query: '' // Search query input
       },
-    
+
       computed: {
         // Calculate the total number of items in the cart
         cartItemCount() {
           return this.cart.reduce((total, item) => total + item.quantity, 0);
         },
-    
+
         // Sort the classes based on the selected attribute and order
         sortedClasses() {
           return [...this.classes].sort((a, b) => {
@@ -178,7 +178,7 @@
 
         // Calculate the total price of the items in the cart
         totalPrice() {
-          return this.cart.reduce((total, item) => total + item.class.price * item.quantity, 0);
+          return this.cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
         },
 
         // Validate the full name (only alphabetic characters and spaces)
@@ -205,20 +205,20 @@
 
         // Add a class to the cart or increase the quantity if it's already in the cart
         addToCart(classItem) {
-          const cartItem = this.cart.find(item => item.class._id === classItem._id);
+          const cartItem = this.cart.find(item => item.product._id === classItem._id);
           if (cartItem) {
             cartItem.quantity++;
           } else {
-            this.cart.push({ class: classItem, quantity: 1 });
+            this.cart.push({ product: classItem, quantity: 1 });
           }
           classItem.availableSeats--; // Decrease available seats
         },
 
         // Remove an item from the cart
         removeFromCart(classItem) {
-          const cartItemIndex = this.cart.findIndex(item => item.class._id === classItem._id);
+          const cartItemIndex = this.cart.findIndex(item => item.product._id === classItem._id);
           if (cartItemIndex > -1) {
-            this.cart[cartItemIndex].class.availableSeats += this.cart[cartItemIndex].quantity;
+            this.cart[cartItemIndex].product.availableSeats += this.cart[cartItemIndex].quantity;
             this.cart.splice(cartItemIndex, 1);
           }
           if (this.cart.length === 0) this.showClass = true; // Show classes view when cart is empty
@@ -234,10 +234,10 @@
           const payload = {
             ...this.order,
             items: this.cart.map(item => ({
-              _id: item.class._id,
-              title: item.class.title,
-              location: item.class.location,
-              price: item.class.price,
+              _id: item.product._id,
+              title: item.product.title,
+              location: item.product.location,
+              price: item.product.price,
               orderedQuantity: item.quantity
             }))
           };
@@ -257,8 +257,8 @@
         // Update the available seats after the order is placed
         fetchPutUpdate() {
           const promises = this.cart.map(item => {
-            const updatedSeats = { availableSeats: item.class.availableSeats };
-            return fetch(`https://nextskill-hub-backend.onrender.com/collection/lessons/${item.class._id}`, {
+            const updatedSeats = { availableSeats: item.product.availableSeats };
+            return fetch(`https://nextskill-hub-backend.onrender.com/collection/lessons/${item.product._id}`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(updatedSeats),
