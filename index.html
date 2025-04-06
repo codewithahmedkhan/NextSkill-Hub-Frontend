@@ -147,8 +147,19 @@
     methods: {
     toggleSortOrder() {
       this.isAscending = !this.isAscending;
+    },
+
+    addToCart(classItem) {
+      const cartItem = this.cart.find(item => item.class._id === classItem._id);
+      if (cartItem) {
+        cartItem.quantity++;
+      } else {
+        this.cart.push({ class: classItem, quantity: 1 });
+      }
+      classItem.availableSeats--;
     }
-  },
+  }
+
 
     });
     </script>
