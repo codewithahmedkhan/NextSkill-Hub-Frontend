@@ -231,10 +231,11 @@
      imageLink(image) {
       return `https://next-skill-hub-backend.onrender.com/${image}`;
     }
-
+    },
     
- 
-}
+    created() {
+                this.fetchProducts();
+            }
 
 
 });
