@@ -143,11 +143,13 @@
     isFormValid() {
       return this.isValidName && this.isValidPhoneNumber;
     }
-
-    
-
-
+    },
+    methods: {
+    toggleSortOrder() {
+      this.isAscending = !this.isAscending;
     }
+  },
+
     });
     </script>
     
