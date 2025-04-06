@@ -170,6 +170,29 @@
 
     showCheckout() {
       this.showClass = !this.showClass; // Toggle the view between class listing and checkout
+    },
+
+    submitForm() {
+      const payload = {
+        ...this.order,
+        items: this.cart.map(item => ({
+          _id: item.class._id,
+          title: item.class.title,
+          location: item.class.location,
+          price: item.class.price,
+          orderedQuantity: item.quantity
+        }))
+      };
+      fetch('https://next-skill-hub-backend.onrender.com/collection/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+        .then(() => {
+          alert("Order placed successfully!");
+          this.fetchPutUpdate();
+        })
+        .catch(error => console.error("Error submitting order:", error));
     }
     
  
