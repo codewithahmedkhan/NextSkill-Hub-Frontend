@@ -114,7 +114,14 @@ new Vue({
     isAscending: true,
     order: { fullName: "", phoneNumber: null },
     query: ''
+  },
+
+  computed: {
+  cartItemCount() {
+    return this.cart.reduce((total, item) => total + item.quantity, 0);
   }
+}
+
 });
 
 
