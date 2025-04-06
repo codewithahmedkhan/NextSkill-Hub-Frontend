@@ -166,12 +166,15 @@
         this.cart.splice(cartItemIndex, 1);
       }
       if (this.cart.length === 0) this.showClass = true;
+    },
+    showCheckout() {
+      this.showClass = !this.showClass; // Toggle the view between class listing and checkout
     }
  
   }
 
 
-    });
+});
     </script>
     
 </body>
