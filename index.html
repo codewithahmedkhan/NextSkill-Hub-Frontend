@@ -216,6 +216,17 @@
         .then(data => { this.classes = data; })
         .catch(error => console.error("Error fetching products:", error));
     },
+
+    fetchGetSearch() {
+      if (!this.query.trim()) {
+        this.fetchProducts();
+      } else {
+        fetch(`https://next-skill-hub-backend.onrender.com/search/lessons?q=${encodeURIComponent(this.query.trim())}`)
+          .then(response => response.json())
+          .then(data => { this.classes = data; })
+          .catch(error => console.error("Error fetching search results:", error));
+      }
+    },
     
  
 }
