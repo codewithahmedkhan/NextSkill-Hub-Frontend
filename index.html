@@ -18,12 +18,12 @@
       <div class="search-sort">
         <input 
           v-model.trim="query" 
-          @input="filterProducts" 
+          @input="fetchGetSearch" 
           type="text" 
-          placeholder="Search classes..." />
+          placeholder="Search lessons..." />
         <div class="sort-container">
           <select v-model="sortAttribute">
-            <option value="title">Title</option>
+            <option value="title">Subject</option>
             <option value="location">Location</option>
             <option value="price">Price</option>
             <option value="availableSeats">Availability</option>
@@ -83,7 +83,7 @@
           </div>
           <p class="total-amount">Total: AED {{ totalPrice }}</p>
         </div>
-    
+
         <div class="order-form">
           <h3>Order Details</h3>
           <label>Full Name:</label>
@@ -96,10 +96,28 @@
         </div>
       </section>
     </main>
+
     <footer>
-        <p>&copy; 2025 Next-Skill Hub. All rights reserved.</p>
-      </footer>
+      <p>&copy; 2025 Next-Skill Hub. All rights reserved.</p>
+    </footer>
   </div>
-  <script type="text/javascript"></script>
+
+  <script type="text/javascript">
+new Vue({
+  el: "#app",
+  data: {
+    sitename: "Next-Skill Hub",
+    classes: [],
+    cart: [],
+    showClass: true,
+    sortAttribute: "title",
+    isAscending: true,
+    order: { fullName: "", phoneNumber: null },
+    query: ''
+  }
+});
+
+
+  </script>
 </body>
 </html>
