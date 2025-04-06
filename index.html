@@ -129,8 +129,11 @@
             if (typeof bVal === "string") bVal = bVal.toLowerCase();
             return this.isAscending ? (aVal > bVal ? 1 : -1) : (aVal < bVal ? 1 : -1);
           });
-        }
-      }
+        },
+        totalPrice() {
+      return this.cart.reduce((total, item) => total + item.class.price * item.quantity, 0);
+    }
+    }
     });
     </script>
     
