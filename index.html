@@ -132,7 +132,11 @@
         },
         totalPrice() {
       return this.cart.reduce((total, item) => total + item.class.price * item.quantity, 0);
+    },
+    isValidName() {
+      return /^[a-zA-Z\s]+$/.test(this.order.fullName) && this.order.fullName.trim().length > 1;
     }
+    
     }
     });
     </script>
