@@ -53,7 +53,7 @@
       </div>
 
       <!-- Cart Button, disabled if cart is empty -->
-      <button id="checkout_button" @click="showCheckout" :disabled="cart.length === 0">
+      <button v-if="cart.length > 0" id="checkout_button" @click="showCheckout">
         <i class="fas fa-shopping-cart"></i> {{ cartItemCount }}
       </button>
     </header>
@@ -128,18 +128,34 @@
         <div class="order-form">
           <h3>Order Details</h3>
           <label>Full Name:</label>
-          <input type="text" v-model.trim="order.fullName" placeholder="Your full name" />
+          <input type="text" v-model.trim="order.fullName" placeholder="Your full name" @input="updateOrderPreview" />
+          <p v-if="isNameInvalid" class="error-message">Don't write numbers in full name</p>
           
           <label>Phone Number:</label>
-          <input type="number" v-model.number="order.phoneNumber" placeholder="Your phone number" />
+          <input type="number" v-model.number="order.phoneNumber" placeholder="Your phone number" @input="updateOrderPreview" />
           
           <!-- Submit button for placing order -->
           <button id="submitButton" @click="submitForm" :disabled="!isFormValid">
             Place Order
           </button>
         </div>
+
+        <!-- Order Preview section -->
+        <div class="order-preview">
+          <h3>Order Preview</h3>
+          <p><strong>Full Name:</strong> {{ order.fullName }}</p>
+          <p><strong>Phone Number:</strong> {{ order.phoneNumber }}</p>
+        </div>
       </section>
     </main>
+
+    <!-- Popup after placing order -->
+    <div v-if="showPopup" class="popup">
+      <div class="popup-content">
+        <h3>Order Placed Successfully!</h3>
+        <button @click="closePopup">OK</button>
+      </div>
+    </div>
 
     <footer>
       <p>&copy; 2025 Next-Skill Hub. All rights reserved.</p>
@@ -159,7 +175,9 @@
         isAscending: true, // Whether to sort in ascending order
         order: { fullName: "", phoneNumber: null }, // User's order details
         query: '', // Search query input
-        isLoading: true // Loader state
+        isLoading: true, // Loader state
+        showPopup: false, // Controls the popup display
+        isNameInvalid: false // To check if name input is invalid
       },
 
       computed: {
@@ -196,6 +214,7 @@
 
         // Validate the order form (both name and phone number must be valid)
         isFormValid() {
+          this.isNameInvalid = !this.isValidName;
           return this.isValidName && this.isValidPhoneNumber;
         }
       },
@@ -247,7 +266,7 @@
             body: JSON.stringify(payload),
           })
           .then(() => {
-            alert("Order placed successfully!");
+            this.showPopup = true; // Show popup after placing the order
             this.fetchProducts();  // Fetch the updated products after the order is placed
           })
           .catch(error => console.error("Error submitting order:", error));
@@ -282,6 +301,22 @@
         // Return the full image URL
         imageLink(image) {
           return `https://nextskill-hub-backend.onrender.com/assets/${image}`;
+        },
+
+        // Close popup after order is placed
+        closePopup() {
+          this.showPopup = false;
+          this.showClass = true; // Go back to the classes page after closing the popup
+          location.reload(); // Refresh the page after popup close
+        },
+
+        // Update the order preview in real-time
+        updateOrderPreview() {
+          if (!this.isValidName) {
+            this.isNameInvalid = true;
+          } else {
+            this.isNameInvalid = false;
+          }
         }
       },
 
